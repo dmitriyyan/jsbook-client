@@ -21,7 +21,8 @@ const App = () => {
       entryPoints: ['index.js'],
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin()]
+      plugins: [unpkgPathPlugin()],
+      minify: true,
     })
 
     setCode(result.outputFiles[0].text);
