@@ -11,7 +11,7 @@ const App = () => {
   useEffect(() => {
     void esbuild.initialize({
       worker: true,
-      wasmURL: '/esbuild.wasm'
+      wasmURL: 'https://unpkg.com/esbuild-wasm/esbuild.wasm'
     })
   }, [])
 
@@ -21,7 +21,7 @@ const App = () => {
       bundle: true,
       write: false,
       plugins: [unpkgPathPlugin(), fetchPlugin(input)],
-      minify: true,
+      minify: true,support
     })
 
     setCode(result.outputFiles[0].text);
