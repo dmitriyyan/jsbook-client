@@ -1,13 +1,12 @@
 import ReactDOM from 'react-dom/client';
 import { useEffect, useState } from 'react';
-import * as esbuild from 'esbuild-wasm';
+import esbuild from 'esbuild-wasm';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
+import { fetchPlugin } from './plugins/fetch-plugin';
 
 const App = () => {
   const [input, setInput] = useState('');
   const [code, setCode] = useState('');
-
-
 
   useEffect(() => {
     void esbuild.initialize({
@@ -21,7 +20,7 @@ const App = () => {
       entryPoints: ['index.js'],
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin()],
+      plugins: [unpkgPathPlugin(), fetchPlugin(input)],
       minify: true,
     })
 

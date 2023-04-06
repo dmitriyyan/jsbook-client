@@ -1,44 +1,23 @@
-import * as esbuild from 'esbuild-wasm';
-import axios from 'axios';
+import esbuild from 'esbuild-wasm';
 
 export const unpkgPathPlugin = () => {
   return {
     name: 'unpkg-path-plugin',
     setup(build: esbuild.PluginBuild) {
-      build.onResolve({ filter: /.*/ }, async (args: any) => {
-        console.log('onResovle', args);
-        if (args.path === 'index.js') {
-          return { path: args.path, namespace: 'a' };
-        }
-
-        if (args.path.includes('./') || args.path.includes('../')) {
-          const path = new URL(args.path, `https://unpkg.com${args.resolveDir}/`).href;
-          return { namespace: 'a', path }
-        }
-
-        return { namespace: 'a', path: `https://unpkg.com/${args.path}` };
+      // Handle root entry file of 'index.js'
+      build.onResolve({ filter: /(^index\.js$)/ }, () => {
+        return { path: 'index.js', namespace: 'a' };
       });
 
-      build.onLoad({ filter: /.*/ }, async (args: any) => {
-        console.log('onLoad', args);
+      // Handle relative paths in a module
+      build.onResolve({ filter: /^\.+\// }, (args) => {
+          const path = new URL(args.path, `https://unpkg.com${args.resolveDir}/`).href;
+          return { path, namespace: 'a' }
+      });
 
-        if (args.path === 'index.js') {
-          return {
-            loader: 'jsx',
-            contents: `
-              import React, { useState } from 'react';
-              console.log(React, useState);
-            `,
-          };
-        }
-
-        const { data, request } = await axios.get(args.path);
-        return {
-          loader: 'jsx',
-          contents: data,
-          resolveDir: new URL('./', request.responseURL).pathname
-        }
-
+      // Handle main file of a module
+      build.onResolve({ filter: /.*/ }, async (args) => {
+        return { path: `https://unpkg.com/${args.path}` , namespace: 'a' };
       });
     },
   };
