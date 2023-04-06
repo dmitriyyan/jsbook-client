@@ -21,7 +21,7 @@ const App = () => {
       bundle: true,
       write: false,
       plugins: [unpkgPathPlugin(), fetchPlugin(input)],
-      minify: true,support
+      minify: true,
     })
 
     setCode(result.outputFiles[0].text);
