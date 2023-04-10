@@ -43,7 +43,6 @@ const Resizable = ({
   }, [editorWidth]);
 
   const handleOnResizeStop: ResizableProps['onResizeStop'] = (event, data) => {
-    console.log(data.size.width);
     setEditorWidth(data.size.width);
 
     if (onResizeStop) {

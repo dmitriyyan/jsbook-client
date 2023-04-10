@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import CodeEditor from '../CodeEditor';
 import Preview from '../Preview';
@@ -9,19 +9,7 @@ const CodeCell = () => {
   const [isResizing, setIsResizing] = useState(false);
   const [input, setInput] = useState('');
 
-  const { code, handleBundle } = useBundler();
-
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      handleBundle(input);
-    }, 1000);
-
-    return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
-    };
-  }, [input]);
+  const { code, error } = useBundler(input);
 
   const handleChange = (value: string | undefined) => {
     setInput(value || '');
@@ -49,8 +37,12 @@ const CodeCell = () => {
         >
           <CodeEditor input={input} onChange={handleChange} />
         </Resizable>
-        <div style={{ pointerEvents: isResizing ? 'none' : 'all', flex: 1 }}>
-          <Preview code={code} />
+        <div
+          style={{
+            pointerEvents: isResizing ? 'none' : 'all',
+          }}
+        >
+          <Preview code={code} codeError={error} />
         </div>
       </div>
     </Resizable>

@@ -4,29 +4,68 @@ import esbuild from 'esbuild-wasm';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
 
-const useBundler = () => {
+const useBundler = (input: string) => {
+  const [isReady, setIsReady] = useState(false);
   const [code, setCode] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    esbuild.initialize({
-      worker: true,
-      wasmURL: 'https://unpkg.com/esbuild-wasm/esbuild.wasm',
-    });
+    const init = async () => {
+      try {
+        await esbuild.initialize({
+          worker: true,
+          wasmURL: './node_modules/esbuild-wasm/esbuild.wasm',
+        });
+
+        setIsReady(true);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    init();
   }, []);
 
   const handleBundle = async (input: string) => {
-    const result = await esbuild.build({
-      entryPoints: ['index.js'],
-      bundle: true,
-      write: false,
-      plugins: [unpkgPathPlugin(), fetchPlugin(input)],
-      minify: true,
-    });
+    try {
+      if (error) {
+        setError('');
+      }
 
-    setCode(result.outputFiles[0].text);
+      const result = await esbuild.build({
+        entryPoints: ['index.js'],
+        bundle: true,
+        write: false,
+        plugins: [unpkgPathPlugin(), fetchPlugin(input)],
+        minify: true,
+      });
+
+      setCode(result.outputFiles[0].text);
+    } catch (error) {
+      console.error(error);
+
+      if (error instanceof Error) {
+        setError(error.message);
+      }
+    }
   };
 
-  return { code, handleBundle };
+  useEffect(() => {
+    let timer: number | null = null;
+    if (isReady) {
+      timer = setTimeout(async () => {
+        handleBundle(input);
+      }, 1000);
+    }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [input, isReady]);
+
+  return { code, error };
 };
 
 export default useBundler;
