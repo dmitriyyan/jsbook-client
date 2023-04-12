@@ -1,13 +1,17 @@
 import { useState } from 'react';
 
-import CodeEditor from '../CodeEditor';
-import Preview from '../Preview';
-import useBundler from '../../hooks/useBundler';
-import Resizable from '../Resizable';
+import CodeEditor from '../../CodeEditor';
+import Preview from '../../Preview';
+import useBundler from '../../../hooks/useBundler';
+import Resizable from '../../Resizable';
 
-const CodeCell = () => {
+type CodeCellProps = {
+  initialInput: string;
+};
+
+const CodeCell = ({ initialInput }: CodeCellProps) => {
   const [isResizing, setIsResizing] = useState(false);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState(initialInput);
 
   const { code, error } = useBundler(input);
 
@@ -29,7 +33,7 @@ const CodeCell = () => {
       onResizeStart={handleResizeStart}
       onResizeStop={handleResizeStop}
     >
-      <div style={{ height: '100%', display: 'flex' }}>
+      <div style={{ height: 'calc(100% - 10px)', display: 'flex' }}>
         <Resizable
           direction="horizontal"
           onResizeStart={handleResizeStart}

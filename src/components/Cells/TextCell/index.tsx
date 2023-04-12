@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 
-import './TextEditor.css';
+import './TextCell.css';
 
-const TextEditor = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [input, setInput] = useState('');
+type TextCellProps = {
+  initialInput: string;
+};
+
+const TextCell = ({ initialInput }: TextCellProps) => {
+  const [isEditing, setIsEditing] = useState(true);
+  const [input, setInput] = useState(initialInput);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -40,6 +44,7 @@ const TextEditor = () => {
           onChange={handleChange}
           maxHeight={window.innerHeight * 0.9}
           minHeight={window.innerHeight * 0.1}
+          autoFocus
         />
       </div>
     );
@@ -59,4 +64,4 @@ const TextEditor = () => {
   );
 };
 
-export default TextEditor;
+export default TextCell;

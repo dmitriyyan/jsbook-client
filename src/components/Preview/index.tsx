@@ -8,13 +8,17 @@ type PreviewProps = {
 };
 
 const Preview = ({ code, codeError }: PreviewProps) => {
-  const iframeRef = useRef<any>();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    iframeRef.current.srcdoc = previewInitialHtmlCode;
+    if (iframeRef.current) {
+      iframeRef.current.srcdoc = previewInitialHtmlCode;
+    }
 
     setTimeout(() => {
-      iframeRef.current.contentWindow.postMessage(code, '*');
+      if (iframeRef.current && iframeRef.current.contentWindow) {
+        iframeRef.current.contentWindow.postMessage(code, '*');
+      }
     }, 50);
   }, [code]);
 
