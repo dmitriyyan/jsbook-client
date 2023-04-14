@@ -1,74 +1,58 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import esbuild from 'esbuild-wasm';
 
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
-
-type CustomWindow = Window & {
-  isEsbuildInitilized?: boolean;
-};
-
-declare const window: CustomWindow;
+import useInitBundler from './useInitBundler';
 
 const useBundler = (input: string) => {
-  const [isReady, setIsReady] = useState(false);
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [isBundling, setIsBundling] = useState(false);
 
-  useEffect(() => {
-    const init = async () => {
+  const { isReady, initError } = useInitBundler();
+
+  const handleBundle = useCallback(
+    async (input: string) => {
       try {
-        window.isEsbuildInitilized = true;
+        if (error) {
+          setError('');
+        }
 
-        await esbuild.initialize({
-          worker: true,
-          wasmURL: './node_modules/esbuild-wasm/esbuild.wasm',
+        setIsBundling(true);
+        const result = await esbuild.build({
+          entryPoints: ['index.js'],
+          bundle: true,
+          write: false,
+          plugins: [unpkgPathPlugin(), fetchPlugin(input)],
+          minify: true,
+          target: 'esnext',
         });
 
-        setIsReady(true);
+        setCode(result.outputFiles[0].text);
       } catch (error) {
         console.error(error);
+
         if (error instanceof Error) {
           setError(error.message);
         }
+      } finally {
+        setIsBundling(false);
       }
-    };
-
-    if (!window.isEsbuildInitilized) {
-      init();
-    }
-  }, []);
-
-  const handleBundle = async (input: string) => {
-    try {
-      if (error) {
-        setError('');
-      }
-
-      const result = await esbuild.build({
-        entryPoints: ['index.js'],
-        bundle: true,
-        write: false,
-        plugins: [unpkgPathPlugin(), fetchPlugin(input)],
-        minify: true,
-      });
-
-      setCode(result.outputFiles[0].text);
-    } catch (error) {
-      console.error(error);
-
-      if (error instanceof Error) {
-        setError(error.message);
-      }
-    }
-  };
+    },
+    [error]
+  );
 
   useEffect(() => {
     let timer: number | null = null;
     if (isReady) {
-      timer = setTimeout(async () => {
-        handleBundle(input);
-      }, 1000);
+      if (input === '') {
+        void handleBundle(input);
+      } else if (input !== '') {
+        timer = setTimeout(() => {
+          void handleBundle(input);
+        }, 1000);
+      }
     }
 
     return () => {
@@ -76,9 +60,9 @@ const useBundler = (input: string) => {
         clearTimeout(timer);
       }
     };
-  }, [input, isReady]);
+  }, [handleBundle, input, isReady]);
 
-  return { code, error };
+  return { code, error: initError || error, isBundling } as const;
 };
 
 export default useBundler;

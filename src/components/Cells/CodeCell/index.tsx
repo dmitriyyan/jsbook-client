@@ -13,7 +13,7 @@ const CodeCell = ({ initialInput }: CodeCellProps) => {
   const [isResizing, setIsResizing] = useState(false);
   const [input, setInput] = useState(initialInput);
 
-  const { code, error } = useBundler(input);
+  const { code, error, isBundling } = useBundler(input);
 
   const handleChange = (value: string | undefined) => {
     setInput(value || '');
@@ -44,9 +44,36 @@ const CodeCell = ({ initialInput }: CodeCellProps) => {
         <div
           style={{
             pointerEvents: isResizing ? 'none' : 'all',
+            flex: 1,
           }}
         >
-          <Preview code={code} codeError={error} />
+          <div
+            style={{
+              height: '100%',
+              backgroundColor: '#f5f5f5',
+              flexGrow: 1,
+            }}
+          >
+            {!code || isBundling ? (
+              <div
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  paddingLeft: '10%',
+                  paddingRight: '10%',
+                  animation: 'fadeIn 0.5s',
+                }}
+              >
+                <progress className="progress is-small is-primary" max="100">
+                  Loading
+                </progress>
+              </div>
+            ) : (
+              <Preview code={code} codeError={error} />
+            )}
+          </div>
         </div>
       </div>
     </Resizable>

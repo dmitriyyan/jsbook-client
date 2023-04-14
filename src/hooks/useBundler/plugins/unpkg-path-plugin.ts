@@ -11,13 +11,14 @@ export const unpkgPathPlugin = () => {
 
       // Handle relative paths in a module
       build.onResolve({ filter: /^\.+\// }, (args) => {
-          const path = new URL(args.path, `https://unpkg.com${args.resolveDir}/`).href;
-          return { path, namespace: 'a' }
+        const path = new URL(args.path, `https://unpkg.com${args.resolveDir}/`)
+          .href;
+        return { path, namespace: 'a' };
       });
 
       // Handle main file of a module
-      build.onResolve({ filter: /.*/ }, async (args) => {
-        return { path: `https://unpkg.com/${args.path}` , namespace: 'a' };
+      build.onResolve({ filter: /.*/ }, (args) => {
+        return { path: `https://unpkg.com/${args.path}`, namespace: 'a' };
       });
     },
   };

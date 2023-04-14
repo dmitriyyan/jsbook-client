@@ -8,7 +8,7 @@ const fileCache = localforage.createInstance({
 
 export const fetchPlugin = (inputCode: string) => {
   return {
-    'name': 'fetch-plugin',
+    name: 'fetch-plugin',
     setup(build: esbuild.PluginBuild) {
       build.onLoad({ filter: /(^index\.js$)/ }, () => {
         return {
@@ -17,8 +17,10 @@ export const fetchPlugin = (inputCode: string) => {
         };
       });
 
-      build.onLoad({ filter: /.*/ }, async (args: any) => {
-        const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(args.path);
+      build.onLoad({ filter: /.*/ }, async (args) => {
+        const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(
+          args.path
+        );
 
         if (cachedResult) {
           return cachedResult;
@@ -28,9 +30,16 @@ export const fetchPlugin = (inputCode: string) => {
       });
 
       build.onLoad({ filter: /.css/ }, async (args) => {
-        const { data, request } = await axios.get(args.path);
+        const response = await axios.get<string>(args.path);
+        const [data, request] = [
+          response.data,
+          response.request as XMLHttpRequest,
+        ];
 
-        const escaped = data.replace(/\n/g, '').replace(/"/g, '\\"').replace(/'/g, "\\'");
+        const escaped = data
+          .replace(/\n/g, '')
+          .replace(/"/g, '\\"')
+          .replace(/'/g, "\\'");
         const contents = `
           const style = document.createElement('style');
           style.innerText = '${escaped}';
@@ -40,8 +49,8 @@ export const fetchPlugin = (inputCode: string) => {
         const result: esbuild.OnLoadResult = {
           loader: 'jsx',
           contents,
-          resolveDir: new URL('./', request.responseURL).pathname
-        }
+          resolveDir: new URL('./', request.responseURL).pathname,
+        };
 
         await fileCache.setItem(args.path, result);
 
@@ -49,18 +58,22 @@ export const fetchPlugin = (inputCode: string) => {
       });
 
       build.onLoad({ filter: /.*/ }, async (args) => {
-        const { data, request } = await axios.get(args.path);
+        const response = await axios.get<string>(args.path);
+        const [data, request] = [
+          response.data,
+          response.request as XMLHttpRequest,
+        ];
 
         const result: esbuild.OnLoadResult = {
           loader: 'jsx',
           contents: data,
-          resolveDir: new URL('./', request.responseURL).pathname
-        }
+          resolveDir: new URL('./', request.responseURL).pathname,
+        };
 
         await fileCache.setItem(args.path, result);
 
         return result;
       });
-    }
-  }
-}
+    },
+  };
+};
