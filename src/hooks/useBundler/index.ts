@@ -44,11 +44,11 @@ const useBundler = (input: string) => {
   );
 
   useEffect(() => {
-    let timer: number | null = null;
+    let timer: number | undefined;
     if (isReady) {
       if (input === '') {
         void handleBundle(input);
-      } else if (input !== '') {
+      } else {
         timer = setTimeout(() => {
           void handleBundle(input);
         }, 1000);
@@ -56,9 +56,7 @@ const useBundler = (input: string) => {
     }
 
     return () => {
-      if (timer) {
-        clearTimeout(timer);
-      }
+      clearTimeout(timer);
     };
   }, [handleBundle, input, isReady]);
 

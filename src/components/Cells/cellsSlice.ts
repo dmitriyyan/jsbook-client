@@ -3,10 +3,9 @@ import {
   createSlice,
   createEntityAdapter,
   EntityId,
+  createSelector,
 } from '@reduxjs/toolkit';
-import { bindActionCreators } from '@reduxjs/toolkit';
-
-import { useAppDispatch } from '../../app/hooks';
+import { RootState } from '../../app/store';
 
 export type CellTypes = 'code' | 'text';
 export type Direction = 'up' | 'down';
@@ -33,7 +32,10 @@ export const cellSlice = createSlice({
   name: 'cells',
   initialState,
   reducers: {
-    addInitialCells: cellsAdapter.addMany,
+    addInitialCells: (state, action: PayloadAction<{ cells: Cell[] }>) => {
+      const { cells } = action.payload;
+      cellsAdapter.addMany(state, cells);
+    },
     addCell: (
       state,
       action: PayloadAction<{ id: string | undefined; type: CellTypes }>
@@ -67,7 +69,13 @@ export const cellSlice = createSlice({
         }
       }
     },
-    updateCell: cellsAdapter.updateOne,
+    updateCell: (
+      state,
+      action: PayloadAction<{ id: EntityId; content: string }>
+    ) => {
+      const { id, content } = action.payload;
+      cellsAdapter.updateOne(state, { id, changes: { content } });
+    },
     deleteCell: (state, action: PayloadAction<{ id: EntityId }>) => {
       const { id } = action.payload;
       const cell = selectCellById(state, id);
@@ -115,9 +123,20 @@ export const cellSlice = createSlice({
 
 export const cellsActions = { ...cellSlice.actions };
 
-export const useCellsActions = () => {
-  const dispatch = useAppDispatch();
-  return bindActionCreators(cellsActions, dispatch);
-};
+export const selectCodeCellContentBeforeCell = createSelector(
+  (state: RootState) => state.cells,
+  (state: RootState, id: string) => id,
+  (state, id) => {
+    const ids = selectCellsIds(state);
+    const index = ids.indexOf(id);
+
+    const codeCells = selectCells(state).filter((cell) => cell.type === 'code');
+
+    return codeCells
+      .slice(0, index)
+      .map((cell) => cell.content)
+      .join('\n');
+  }
+);
 
 export default cellSlice.reducer;

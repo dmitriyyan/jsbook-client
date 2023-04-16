@@ -1,4 +1,4 @@
-import { useCellsActions } from '../cellsSlice';
+import useCellsActions from '../../../hooks/useCellsActions';
 
 type ActionBarProps = {
   id: string;

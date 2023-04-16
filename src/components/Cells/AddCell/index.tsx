@@ -1,4 +1,4 @@
-import { useCellsActions } from '../cellsSlice';
+import useCellsActions from '../../../hooks/useCellsActions';
 
 type AddCellProps = {
   id?: string;

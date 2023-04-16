@@ -14,7 +14,7 @@ const Cell = ({ data }: CellProps) => {
       return <TextCell initialInput={data.content} />;
     }
 
-    return <CodeCell initialInput={data.content} />;
+    return <CodeCell data={data} />;
   };
 
   return (

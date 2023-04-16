@@ -1,19 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import CodeEditor from '../../CodeEditor';
 import Preview from '../../Preview';
 import useBundler from '../../../hooks/useBundler';
 import Resizable from '../../Resizable';
+import { Cell, selectCodeCellContentBeforeCell } from '../cellsSlice';
+import useCellsActions from '../../../hooks/useCellsActions';
+import { useAppSelector } from '../../../app/hooks';
 
 type CodeCellProps = {
-  initialInput: string;
+  data: Cell;
 };
 
-const CodeCell = ({ initialInput }: CodeCellProps) => {
+const CodeCell = ({ data }: CodeCellProps) => {
   const [isResizing, setIsResizing] = useState(false);
-  const [input, setInput] = useState(initialInput);
 
-  const { code, error, isBundling } = useBundler(input);
+  const contentCellsBefore = useAppSelector((state) =>
+    selectCodeCellContentBeforeCell(state, data.id)
+  );
+
+  const [input, setInput] = useState(data.content);
+  const inputToBundle = [contentCellsBefore, input].join('\n');
+
+  const { code, error, isBundling } = useBundler(inputToBundle);
+
+  const { updateCell } = useCellsActions();
+
+  useEffect(() => {
+    const timer = setTimeout(
+      () => updateCell({ id: data.id, content: input }),
+      1000
+    );
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [updateCell, data.id, input]);
 
   const handleChange = (value: string | undefined) => {
     setInput(value || '');
