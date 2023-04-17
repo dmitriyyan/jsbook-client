@@ -27,15 +27,16 @@ const CodeCell = ({ data }: CodeCellProps) => {
   const { updateCell } = useCellsActions();
 
   useEffect(() => {
-    const timer = setTimeout(
-      () => updateCell({ id: data.id, content: input }),
-      1000
-    );
+    const timer = setTimeout(() => {
+      if (data.content !== input) {
+        updateCell({ id: data.id, content: input });
+      }
+    }, 1000);
 
     return () => {
       clearTimeout(timer);
     };
-  }, [updateCell, data.id, input]);
+  }, [updateCell, data.id, data.content, input]);
 
   const handleChange = (value: string | undefined) => {
     setInput(value || '');

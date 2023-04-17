@@ -47,7 +47,7 @@ export const cellSlice = createSlice({
           id: crypto.randomUUID(),
           type,
           content: '',
-          order: total === 0 ? total : total - 1,
+          order: total,
         });
       } else {
         const cell = selectCellById(state, id);
