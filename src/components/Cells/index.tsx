@@ -7,12 +7,17 @@ const Cells = () => {
   const cells = useAppSelector((state) => selectCells(state.cells));
 
   return (
-    <>
+    <div
+      className="cell-list"
+      style={{
+        margin: '0 25px 50vh',
+      }}
+    >
       {cells.map((cell) => (
         <Cell data={cell} key={cell.id} />
       ))}
       <AddCell />
-    </>
+    </div>
   );
 };
 

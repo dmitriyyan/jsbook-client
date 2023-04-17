@@ -27,6 +27,8 @@ const useBundler = (input: string) => {
           plugins: [unpkgPathPlugin(), fetchPlugin(input)],
           minify: true,
           target: 'esnext',
+          jsxFactory: '_React.createElement',
+          jsxFragment: '_React.Fragment',
         });
 
         setCode(result.outputFiles[0].text);

@@ -51,10 +51,9 @@ const AddCell = ({ id }: AddCellProps) => {
           position: 'absolute',
           top: '50%',
           bottom: '50%',
-          right: '2.5%',
-          left: '2.5%',
+          right: '0%',
+          left: '0%',
           borderBottom: '1px solid gray',
-          width: '90%',
           zIndex: -1,
         }}
       />

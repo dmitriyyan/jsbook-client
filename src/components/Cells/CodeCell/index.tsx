@@ -4,7 +4,7 @@ import CodeEditor from '../../CodeEditor';
 import Preview from '../../Preview';
 import useBundler from '../../../hooks/useBundler';
 import Resizable from '../../Resizable';
-import { Cell, selectCodeCellContentBeforeCell } from '../cellsSlice';
+import { Cell, selectCumulativeCode } from '../cellsSlice';
 import useCellsActions from '../../../hooks/useCellsActions';
 import { useAppSelector } from '../../../app/hooks';
 
@@ -15,14 +15,12 @@ type CodeCellProps = {
 const CodeCell = ({ data }: CodeCellProps) => {
   const [isResizing, setIsResizing] = useState(false);
 
-  const contentCellsBefore = useAppSelector((state) =>
-    selectCodeCellContentBeforeCell(state, data.id)
+  const cumulativeCode = useAppSelector((state) =>
+    selectCumulativeCode(state, data.id)
   );
-
   const [input, setInput] = useState(data.content);
-  const inputToBundle = [contentCellsBefore, input].join('\n');
 
-  const { code, error, isBundling } = useBundler(inputToBundle);
+  const { code, error, isBundling } = useBundler(cumulativeCode);
 
   const { updateCell } = useCellsActions();
 

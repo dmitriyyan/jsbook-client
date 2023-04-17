@@ -6,6 +6,7 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
+import { showFunc, showFuncNoOp } from './consts';
 
 export type CellTypes = 'code' | 'text';
 export type Direction = 'up' | 'down';
@@ -123,7 +124,7 @@ export const cellSlice = createSlice({
 
 export const cellsActions = { ...cellSlice.actions };
 
-export const selectCodeCellContentBeforeCell = createSelector(
+export const selectCumulativeCode = createSelector(
   (state: RootState) => state.cells,
   (state: RootState, id: string) => id,
   (state, id) => {
@@ -133,8 +134,16 @@ export const selectCodeCellContentBeforeCell = createSelector(
     const codeCells = selectCells(state).filter((cell) => cell.type === 'code');
 
     return codeCells
-      .slice(0, index)
-      .map((cell) => cell.content)
+      .slice(0, index + 1)
+      .map((cell) => {
+        let join = '';
+        if (cell.id === id) {
+          join = showFunc;
+        } else {
+          join = showFuncNoOp;
+        }
+        return `${join}\n${cell.content}`;
+      })
       .join('\n');
   }
 );
