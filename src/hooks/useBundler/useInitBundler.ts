@@ -20,7 +20,7 @@ const useInitBundler = () => {
 
         await esbuild.initialize({
           worker: true,
-          wasmURL: './node_modules/esbuild-wasm/esbuild.wasm',
+          wasmURL: 'https://unpkg.com/esbuild-wasm@0.17.15/esbuild.wasm',
         });
 
         setIsReady(true);

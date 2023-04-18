@@ -1,9 +1,14 @@
-import traverse from '@babel/traverse';
-import { parse } from '@babel/parser';
-import MonacoJSXHighlighter from 'monaco-jsx-highlighter';
 import { OnMount } from '@monaco-editor/react';
 
-const activateMonacoJSXHighlighter: OnMount = (monacoEditor, monaco) => {
+import MonacoJSXHighlighter from './jsx-highlighter';
+
+const activateMonacoJSXHighlighter = async (
+  monacoEditor: Parameters<OnMount>[0],
+  monaco: Parameters<OnMount>[1]
+) => {
+  const { default: traverse } = await import('@babel/traverse');
+  const { parse } = await import('@babel/parser');
+
   const monacoJSXHighlighter = new MonacoJSXHighlighter(
     monaco,
     parse,
@@ -13,6 +18,10 @@ const activateMonacoJSXHighlighter: OnMount = (monacoEditor, monaco) => {
 
   monacoJSXHighlighter.highlightOnDidChangeModelContent();
   monacoJSXHighlighter.addJSXCommentCommand();
+
+  return {
+    monacoJSXHighlighter,
+  };
 };
 
 export default activateMonacoJSXHighlighter;

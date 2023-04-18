@@ -16,7 +16,7 @@ const CodeEditor = ({ input, onChange }: CodeEditorProps) => {
   };
 
   const onMount = useCallback<OnMount>((editor, monaco) => {
-    activateMonacoJSXHighlighter(editor, monaco);
+    void activateMonacoJSXHighlighter(editor, monaco);
   }, []);
 
   return (

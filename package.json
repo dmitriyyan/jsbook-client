@@ -20,7 +20,6 @@
     "esbuild-wasm": "0.17.15",
     "localforage": "^1.10.0",
     "monaco-editor": "^0.37.1",
-    "monaco-jsx-highlighter": "^2.0.4",
     "prettier": "^2.8.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -42,6 +41,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "rollup-plugin-polyfill-node": "^0.12.0",
     "typescript": "^4.9.3",
     "vite": "^4.2.0"
   }

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-declare module 'monaco-jsx-highlighter' {
+declare module './jsx-highlighter' {
   import * as monaco_editor from 'monaco-editor';
   import traverse from '@babel/traverse';
   import { parse } from '@babel/parser';
