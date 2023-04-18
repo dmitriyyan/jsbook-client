@@ -1,9 +1,13 @@
 import { useCallback } from 'react';
-import { Editor, OnMount } from '@monaco-editor/react';
+import Editor, { OnMount } from '@monaco-editor/react';
+import {
+  MonacoJsxSyntaxHighlight,
+  getWorker,
+} from 'monaco-jsx-syntax-highlight';
 
 import formatCode from './helpers/formatCode';
-import activateMonacoJSXHighlighter from './helpers/activateMonacoJSXHighlighter';
 import editorOptions from './helpers/editorOptions';
+import './CodeEditor.css';
 
 type CodeEditorProps = {
   input: string;
@@ -11,13 +15,28 @@ type CodeEditorProps = {
 };
 
 const CodeEditor = ({ input, onChange }: CodeEditorProps) => {
+  const onMount = useCallback<OnMount>((editor, monaco) => {
+    const monacoJsxSyntaxHighlight = new MonacoJsxSyntaxHighlight(
+      getWorker(),
+      monaco
+    );
+
+    const { highlighter, dispose } =
+      monacoJsxSyntaxHighlight.highlighterBuilder({
+        editor: editor,
+      });
+    highlighter();
+
+    editor.onDidChangeModelContent(() => {
+      highlighter();
+    });
+
+    return dispose;
+  }, []);
+
   const onFormatClick = () => {
     onChange(formatCode(input));
   };
-
-  const onMount = useCallback<OnMount>((editor, monaco) => {
-    void activateMonacoJSXHighlighter(editor, monaco);
-  }, []);
 
   return (
     <div
@@ -41,6 +60,7 @@ const CodeEditor = ({ input, onChange }: CodeEditorProps) => {
         onChange={onChange}
         height="100%"
         defaultLanguage="javascript"
+        path="file:///index.jsx"
         theme="vs-dark"
         options={editorOptions}
         onMount={onMount}
