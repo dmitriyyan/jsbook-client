@@ -1,5 +1,5 @@
 :root {
-  --string-color: #5bb8a;
+  --string-color: #55bb8a;
   --language-keyword-color: #619ac3;
   --global-variable-color: #ba2f7b;
   --unused-opacity: 0.4;
@@ -11,61 +11,61 @@
   --jsx-text-color: #a0a0a0;
 }
 
-p {
-  color: var(--string-color) !important;
+.editor p {
+  color: var(--string-color);
 }
 
-.mtk9 {
-  color: var(--grammar-color) !important;
+.editor .mtk9 {
+  color: var(--grammar-color);
 }
 
-.mtk1 {
-  color: var(--normal-text-color) !important;
+.editor .mtk1 {
+  color: var(--normal-text-color);
 }
 
-.mtk22 {
-  color: var(--global-variable-color) !important;
+.editor .mtk22 {
+  color: var(--global-variable-color);
 }
 
-.mtk8 {
-  color: var(--language-keyword-color) !important;
+.editor .mtk8 {
+  color: var(--language-keyword-color);
 }
 
-.mtk5 {
-  color: var(--string-color) !important;
+.editor .mtk5 {
+  color: var(--string-color);
 }
 
-.monaco-editor.showUnused .squiggly-inline-unnecessary {
-  opacity: var(--unused-opacity) !important;
+.editor .monaco-editor.showUnused .squiggly-inline-unnecessary {
+  opacity: var(--unused-opacity);
 }
 
-.jsx-expression-braces {
-  color: #f1908c !important;
+.editor .jsx-expression-braces {
+  color: #f1908c;
 }
 
-.jsx-tag-angle-bracket {
-  color: var(--jsx-tag-symbol-color) !important;
+.editor .jsx-tag-angle-bracket {
+  color: var(--jsx-tag-symbol-color);
 }
 
-.jsx-tag-angle-bracket.jsx-tag-order-1 {
-  color: #12a182 !important;
+.editor .jsx-tag-angle-bracket.jsx-tag-order-1 {
+  color: #12a182;
 }
-.jsx-tag-angle-bracket.jsx-tag-order-1 {
-  color: #4e7ca1 !important;
-}
-
-.jsx-tag-angle-bracket.jsx-tag-order-3 {
-  color: #fb8b05 !important;
+.editor .jsx-tag-angle-bracket.jsx-tag-order-1 {
+  color: #4e7ca1;
 }
 
-.jsx-tag-name {
-  color: var(--jsx-tag-color) !important;
+.editor .jsx-tag-angle-bracket.jsx-tag-order-3 {
+  color: #fb8b05;
 }
 
-.jsx-tag-attribute-key {
-  color: var(--jsx-attribute-color) !important;
+.editor .jsx-tag-name {
+  color: var(--jsx-tag-color);
 }
 
-.jsx-text {
-  color: var(--jsx-text-color) !important;
+.editor .jsx-tag-attribute-key {
+  color: var(--jsx-attribute-color);
+}
+
+.editor .jsx-text {
+  color: var(--jsx-text-color);
 }
