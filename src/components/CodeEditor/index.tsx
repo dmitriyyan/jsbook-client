@@ -40,7 +40,7 @@ const CodeEditor = ({ input, onChange }: CodeEditorProps) => {
 
   return (
     <div
-      className="is-relative"
+      className="is-relative editor"
       style={{ width: 'calc(100% - 10px)', height: '100%' }}
     >
       <button
