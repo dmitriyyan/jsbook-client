@@ -1,5 +1,0 @@
-*.css
-*.scss
-*.svg
-dist/*
-vite.config.ts
